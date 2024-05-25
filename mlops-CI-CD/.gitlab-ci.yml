@@ -1,0 +1,56 @@
+variables:
+  DOCKER_TLS_CERTDIR: "/certs"
+  IMAGE_NAME: jyotsana4321/mlops-app
+  IMAGE_TAG: v1
+    
+stages:
+  - test
+  - build
+  # - deploy
+  # - destroy
+  
+run_tests:
+  stage: test
+  image: python:3.9-slim-buster
+  before_script:
+    - apt-get update && apt-get install make
+  script:
+    - make test
+
+build_image:
+  stage: build
+  image: docker:20.10.16
+  services:
+    - docker:20.10.16-dind
+  before_script:
+    - docker login -u $REGISTRY_USER -p $REGISTRY_PASSWORD
+  script: 
+    - docker build -t $IMAGE_NAME:$IMAGE_TAG .
+    - docker push $IMAGE_NAME:$IMAGE_TAG
+
+# deploy:
+#   stage: deploy
+#   before_script:
+#     - chmod 400 $SSH_KEY
+#   script:
+#     - ssh -o StrictHostKeyChecking=no -i $SSH_KEY root@161.35.222.117 "
+#       docker login -u $REGISTRY_USER -p $REGISTRY_PASSWORD &&
+#       docker ps -aq | xargs docker stop | xargs docker rm &&
+#       docker run -d -p 5000:5000 $IMAGE_NAME:$IMAGE_TAG"
+
+# deploy:
+#   stage: deploy
+#   image: registry.gitlab.com/gitlab-org/cloud-deploy/aws-base:latest
+#   script:
+#     - aws s3 ...
+#     - aws create-deployment ...
+#   environment: production
+
+# include:
+#   - template: AWS/Deploy-ECS.gitlab-ci.yml
+
+# destroy:
+#   extends: .terraform:destroy
+#   needs:
+#     []
+
