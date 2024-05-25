@@ -1,0 +1,90 @@
+# Minikube start and create and deploy one app
+
+minikube start
+minikube kubectl -- get po -A
+minikube dashboard
+kubectl create deployment hello-minikube --image=kicbase/echo-server:1.0
+kubectl expose deployment hello-minikube --type=NodePort --port=8080
+kubectl get services hello-minikube
+minikube service hello-minikube  
+kubectl port-forward service/hello-minikube 7080:8080
+minikube start -p cluster2
+
+# How to deploy an application to minikube
+kubectl create deployment hello-minikube1 --image=kicbase/echo-server:1.0
+kubectl expose deployment hello-minikube1 --type=LoadBalancer --port=8080
+
+minikube config set memory 9001 # change default memory limit
+minikube pause
+minikube stop
+
+
+## Install mysql in kube
+1. Create mysql-secret.yaml
+2. kubectl apply -f mysql-secret.yaml
+3. Create persistent volume and PV claim yaml
+4. Create mysql deployment yaml
+5. kubectl apply -f <deployment yaml>
+6. kubectl get po
+7. kubectl exec --stdin --tty mysql-74f8bf98c5-bl8vv -- /bin/bash    ##Get a shell for the pod
+8. kubectl port-forward service/mysql 3306:3306
+kubectl delete deployment,svc mysql
+kubectl delete pvc mysql-pv-claim
+kubectl delete pv mysql-pv-volume
+kubectl delete secret mysql-secret
+
+## Command to create Table in SQL
+create table RAW_DATA (C1 int, C2 int,C3 int, C4 int, C5 int, C6 int, C7 int, C8 int,C9 int, C10 int, C11 int, C12 int,C13 int, C14 int, C15 int);
+CREATE TABLE MLOPS_DATA (event_time varchar(30), event_type varchar(10), product_id int, category_code varchar(40), brand varchar(10), price float);
+
+## Create a registry for image locally in minikube
+kubectl create secret docker-registry iterativeai \
+    --namespace studio \
+    --docker-server=docker.iterative.ai \
+    --docker-username=Jyotsana432 \
+    --docker-password=Jyotijass
+
+helm install studio iterative/studio \
+    --namespace studio \
+    --set-json='imagePullSecrets=[{"name": "iterativeai"}]'
+
+
+helm uninstall studio --namespace studio
+
+public url : https://680d-2401-4900-1cba-3ed-5940-5817-b2f4-2a91.ngrok-free.app
+https://34ac-2401-4900-1cba-3ed-5940-5817-b2f4-2a91.ngrok-free.app
+
+
+
+# DOCKER COMMANDS
+docker build -t jyotsana-first .
+docker push jyotsana4321/jyotsana-first:latest
+docker tag jyotsana-first jyotsana4321/jyotsana-first
+
+## KUBERNETES COMMANDS
+kubectl describe pods
+kubectl apply -f service.yaml
+kubectl create --filename service.yaml
+
+kubectl get deployments --all_namespaces
+kubectl delete -n default deployment bb-demo
+kubectl get service -o wide
+kubectl delete svc bb-entrypoint
+
+kubectl get replicasets
+kubectl describe replicasets
+kubectl get pods --selector="run=load-balancer-example" --output=wide
+
+kubectl cluster-info
+create a firewall rule that allows TCP traffic on port 30001
+
+curl http://<public-node-ip>:<node-port>
+
+kubectl get deploy bb-demo -o yaml 
+
+minikube addons enable ingress
+kubectl get pods -n ingress-nginx
+kubectl get ingress example-ingress -o yaml
+
+minikube addons enable ingress # ingress controller
+kubectl get ingress -n default

@@ -1,0 +1,14 @@
+## Ingress makes this service available
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-ingress-service
+  namespace: default
+spec:
+  selector:
+      bb: web
+  ports:
+      - protocol: TCP
+        port: 8000
+        targetPort: 8000

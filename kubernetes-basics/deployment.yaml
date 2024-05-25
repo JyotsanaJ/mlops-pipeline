@@ -1,0 +1,26 @@
+## Deployment of app
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bb-demo
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      bb: web
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        bb: web
+    spec:
+      containers:
+      - name: bb-site
+        image: jyotsana4321/jyotsana-first:latest
+        resources:
+          limits:
+            memory: "1000Mi"
+            cpu: "1000m"
+        ports:
+        - containerPort: 8000
